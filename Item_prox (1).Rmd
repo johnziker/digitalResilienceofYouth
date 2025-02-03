@@ -1,0 +1,66 @@
+---
+title: "Item Prox"
+output: html_document
+author: "Hollie Abele"
+---
+
+## Benefits Item Prox
+
+```{r, echo=FALSE}
+library(ggplot2)
+library(stats)
+library(ggrepel)
+```
+
+```{r}
+scaled_apm <- scale(benefits_apm) 
+coordinates <- cmdscale(dist(scaled_apm), k = 2) 
+labels <- rownames(benefits_apm)
+apm_df <- data.frame(Dimension1 = coordinates[,1], Dimension2 = coordinates[,2], Label = labels)
+```
+
+```{r}
+theta <- pi / 2 
+rotation_matrix <- matrix(c(cos(theta), -sin(theta), sin(theta), cos(theta)), nrow = 2, byrow = TRUE)
+coordinates_rotated <- coordinates %*% rotation_matrix
+
+coordinates_rotated_df <- as.data.frame(coordinates_rotated)
+colnames(coordinates_rotated_df) <- c("V1", "V2")
+```
+
+```{r}
+ggplot(coordinates_rotated_df, aes(x = V1, y = V2, label = rownames(coordinates_rotated_df))) +
+  geom_point(color = "black", size = 3) +
+  geom_text_repel(min.segment.length = 0, seed = 42, box.padding = 0.5) +
+  labs(x = "", y = "") +
+  coord_cartesian(xlim = c(-6,6), ylim = ) +
+  theme_void()
+```
+
+## Risks Item Prox
+
+```{r}
+scaled_apmr <- scale(risks_apm) 
+coordinates1 <- cmdscale(dist(scaled_apmr), k = 2) 
+labels1 <- rownames(risks_apm)
+risks_df <- data.frame(Dimension1 = coordinates1[,1], Dimension2 = coordinates1[,2], Label = labels1)
+```
+
+```{r}
+ggplot(risks_df, aes(x = Dimension2, y = Dimension1, label = labels1)) +
+  geom_point(color = "black", size = 3) +
+  geom_text_repel(min.segment.length = 0, seed = 42, box.padding = 0.5) +
+  labs( x = "", y = "") +
+  coord_cartesian(xlim = c(-6,6), ylim = ) +
+  theme_void()
+```
+
+# References
+
+https://chatgpt.com/
+
+https://cran.r-project.org/web/packages/ggplot2/index.html
+
+https://ggrepel.slowkow.com/articles/examples#always-or-never-draw-line-segments
+
+https://stat.ethz.ch/R-manual/R-devel/library/stats/html/00Index.html
